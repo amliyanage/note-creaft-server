@@ -7,4 +7,6 @@ export class Note{
     date   !:Date
     status  !:string
     userName   !:string
+    title !:string
+    visibility !:string
 }

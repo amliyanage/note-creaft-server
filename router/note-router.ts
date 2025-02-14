@@ -1,7 +1,7 @@
 import express from "express";
 import {upload} from "../util/multer";
 import {Note} from "../module/Note";
-import {deleteNote, getNotes, getNotesByUser, saveNote, update} from "../db/prisma-data-note-store";
+import {deleteNote, getAllPublicNotes, getNotes, getNotesByUser, saveNote, update} from "../db/prisma-data-note-store";
 
 const router = express.Router()
 
@@ -63,6 +63,17 @@ router.delete("/delete/:noteId" , async (req , res) => {
     } catch (err){
         console.log("error on delete note : ", err)
         res.status(500).send("error on delete note")
+    }
+})
+
+router.get("/getPublicNotes", async (req , res) => {
+    try{
+        const notes = await getAllPublicNotes()
+        console.log("get notes : ", notes)
+        res.json(notes).status(200)
+    } catch (err){
+        console.log("error on get notes : ", err)
+        res.status(500).send("error on get notes")
     }
 })
 

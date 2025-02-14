@@ -23,6 +23,8 @@ model note {
   thumbnail   String
   noteBody    String
   summery     String
+  title       String
+  visibility  String
   isFavourite String
   date        DateTime
   status      String

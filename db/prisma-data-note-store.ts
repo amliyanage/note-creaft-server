@@ -16,6 +16,8 @@ export async function saveNote(n : Note , file : string){
                 isFavourite : n.isFavourite,
                 date : new Date(),
                 status : n.status,
+                title : n.title,
+                visibility : n.visibility
             }
         })
         console.log("saved note : ", savedNote)
@@ -63,7 +65,9 @@ export async function update(n : Note , noteId : string){
                 summery : n.summery,
                 thumbnail : result.secure_url,
                 isFavourite : n.isFavourite,
-                status : n.status
+                status : n.status,
+                title : n.title,
+                visibility : n.visibility
             }
         })
         console.log("updated note : ", updatedNote)
@@ -84,5 +88,17 @@ export async function deleteNote(noteId : string){
         return note
     } catch (err){
         console.log("error on delete note : ", err)
+    }
+}
+
+export async function getAllPublicNotes(){
+    try{
+        const notes = await prisma.note.findMany({
+            where : { visibility : "public" }
+        })
+        console.log("get all public notes : ", notes)
+        return notes
+    } catch (err){
+        console.log("error on get all public notes : ", err)
     }
 }
