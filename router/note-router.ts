@@ -1,7 +1,7 @@
 import express from "express";
 import {upload} from "../util/multer";
 import {Note} from "../module/Note";
-import {getNotes, saveNote} from "../db/prisma-data-note-store";
+import {getNotes, getNotesByUser, saveNote} from "../db/prisma-data-note-store";
 
 const router = express.Router()
 
@@ -21,6 +21,18 @@ router.get("/get/:noteId", async (req , res) => {
     const noteId = req.params.noteId
     try{
         const notes = await getNotes(noteId)
+        console.log("get notes : ", notes)
+        res.json(notes).status(200)
+    } catch (err){
+        console.log("error on get notes : ", err)
+        res.status(500).send("error on get notes")
+    }
+})
+
+router.get("/getNoteByUser/:userName", async (req , res) => {
+    const userName = req.params.userName
+    try{
+        const notes = await getNotesByUser(userName)
         console.log("get notes : ", notes)
         res.json(notes).status(200)
     } catch (err){

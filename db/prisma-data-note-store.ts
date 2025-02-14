@@ -36,3 +36,15 @@ export async function getNotes(noteId : string){
         console.log("error on get notes : ", err)
     }
 }
+
+export async function getNotesByUser(userName : string){
+    try{
+        const notes = await prisma.note.findMany({
+            where : { userName : userName }
+        })
+        console.log("get notes : ", notes)
+        return notes
+    } catch (err){
+        console.log("error on get notes : ", err)
+    }
+}
