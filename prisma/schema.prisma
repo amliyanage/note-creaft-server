@@ -26,8 +26,8 @@ model note {
   isFavourite String
   date        DateTime
   status      String
+  userName    String
 
-  userName          String
   user              user                @relation(fields: [userName], references: [userName])
   projectCollection projectCollection[]
 }
