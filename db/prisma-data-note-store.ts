@@ -24,3 +24,15 @@ export async function saveNote(n : Note , file : string){
         console.log("error on save note : ", err)
     }
 }
+
+export async function getNotes(noteId : string){
+    try{
+        const notes = await prisma.note.findMany({
+            where : { noteId : noteId }
+        })
+        console.log("get notes : ", notes)
+        return notes
+    } catch (err){
+        console.log("error on get notes : ", err)
+    }
+}
