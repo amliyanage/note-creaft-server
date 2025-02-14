@@ -8,7 +8,7 @@ datasource db {
 }
 
 model user {
-  userName   String           @id @default(auto()) @map("_id") @db.ObjectId
+  userName   String           @id @map("_id")
   name       String
   password   String
   email      String
@@ -23,7 +23,7 @@ model note {
   thumbnail   String
   noteBody    String
   summery     String
-  isFavourite Boolean
+  isFavourite String
   date        DateTime
   status      String
 
