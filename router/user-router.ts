@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import {User} from "../module/User";
-import {getUser, update} from "../db/prisma-data-user-store";
+import {deleteUser, getUser, update} from "../db/prisma-data-user-store";
 import {upload} from "../util/multer";
 
 dotenv.config()
@@ -31,6 +31,18 @@ router.put("/update/:username" , upload.single('profilePic') , async (req , res)
     } catch (err){
         console.log("error on update user ; ", err)
         res.status(500).send("error on update ")
+    }
+})
+
+router.delete("/delete/:username" , async (req,res) => {
+    const username = req.params.username
+    try{
+        const deletedUser = await deleteUser(username)
+        console.log("user deleted" , deletedUser)
+        res.json(deletedUser).status(201)
+    }catch (err){
+        console.log("error on deleted user : ", err)
+        res.status(500).send("error on delete user")
     }
 })
 

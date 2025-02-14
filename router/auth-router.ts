@@ -64,7 +64,21 @@ export function authenticateToken(req : express.Request, res : express.Response,
     }
 }
 
-// TODO : Refresh Token
+router.post("/refresh-token", async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const refresh_token = authHeader?.split(' ')[1];
+
+    if(!refresh_token)res.status(401).send('No token provided');
+
+    try{
+        const payload = jwt.verify(refresh_token as string, process.env.REFRESH_TOKEN as Secret) as {username: string, iat: number};
+        const token = jwt.sign({ username: payload.username }, process.env.SECRET_KEY as Secret, {expiresIn: "1m"});
+        res.json({accessToken : token});
+    }catch(err){
+        console.log(err);
+        res.status(401).json(err);
+    }
+})
 
 
 export default router
