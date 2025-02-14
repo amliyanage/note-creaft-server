@@ -72,3 +72,17 @@ export async function update(n : Note , noteId : string){
         console.log("error on update note : ", err)
     }
 }
+
+export async function deleteNote(noteId : string){
+    try{
+        const note = await prisma.note.delete({
+            where : { noteId : noteId }
+        })
+        const oldImagePublicId = note.thumbnail.split("/").pop()?.split(".")[0]
+        await cloudinary.uploader.destroy(`note/${oldImagePublicId}`)
+        console.log("deleted note : ", note)
+        return note
+    } catch (err){
+        console.log("error on delete note : ", err)
+    }
+}
