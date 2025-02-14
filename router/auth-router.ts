@@ -18,7 +18,7 @@ router.post("/login", async (req, res) => {
         const isVerified = await verifyUser(userName, password)
         if(isVerified){
             console.log("Loaded secret key: ", process.env.REFRESH_TOKEN);
-            const token = jwt.sign({userName : userName}, process.env.SECRET_KEY as Secret , { expiresIn : "1h" })
+            const token = jwt.sign({userName : userName}, process.env.SECRET_KEY as Secret , { expiresIn : "7d" })
             console.log("token" , token)
             const refreshToken = jwt.sign({userName : userName}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
             console.log("refresh",refreshToken)

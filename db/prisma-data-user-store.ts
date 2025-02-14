@@ -26,7 +26,7 @@ export async function add(u : User , file : string){
     }
 }
 
-export async function update(u : User){
+export async function update(u : User , userName : string){
     try{
         if(u.profilePic){
             const oldImagePublicId = u.profilePic.split("/").pop()?.split(".")[0]
@@ -35,7 +35,7 @@ export async function update(u : User){
         const result = await cloudinary.uploader.upload(u.profilePic, {folder : "user"})
         const hashPassword = await bcrypt.hash(u.password, 10)
         const updateUser = await prisma.user.update({
-            where : { userName : u.userName },
+            where : { userName : userName },
             data : {
                 name : u.name,
                 password : hashPassword,

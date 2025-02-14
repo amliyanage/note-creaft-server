@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import express from "express";
 import {User} from "../module/User";
-import {getUser} from "../db/prisma-data-user-store";
+import {getUser, update} from "../db/prisma-data-user-store";
+import {upload} from "../util/multer";
 
 dotenv.config()
 
@@ -15,7 +16,21 @@ router.get("/get/:userName", async (req, res) => {
         res.status(200).json(user)
     } catch (err) {
         console.log("error on get User ", err)
-        res.status(400).send('Error fetching user data')
+        res.status(500).send('Error fetching user data')
+    }
+})
+
+router.put("/update/:username" , upload.single('profilePic') , async (req , res) => {
+    const userName = req.params.username
+    const user : User = req.body
+
+    try{
+        const updatedUser = await update(user,userName)
+        console.log("updated user" , updatedUser)
+        res.json(updatedUser).status(201)
+    } catch (err){
+        console.log("error on update user ; ", err)
+        res.status(500).send("error on update ")
     }
 })
 
