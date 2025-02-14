@@ -48,3 +48,27 @@ export async function getNotesByUser(userName : string){
         console.log("error on get notes : ", err)
     }
 }
+
+export async function update(n : Note , noteId : string){
+    try{
+        if(n.thumbnail){
+            const oldImagePublicId = n.thumbnail.split("/").pop()?.split(".")[0]
+            await cloudinary.uploader.destroy(`note/${oldImagePublicId}`)
+        }
+        const result = await cloudinary.uploader.upload(n.thumbnail, {folder : "note"})
+        const updatedNote = await prisma.note.update({
+            where : { noteId : noteId },
+            data : {
+                noteBody : n.noteBody,
+                summery : n.summery,
+                thumbnail : result.secure_url,
+                isFavourite : n.isFavourite,
+                status : n.status
+            }
+        })
+        console.log("updated note : ", updatedNote)
+        return updatedNote
+    } catch (err){
+        console.log("error on update note : ", err)
+    }
+}
