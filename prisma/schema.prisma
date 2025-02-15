@@ -35,8 +35,9 @@ model note {
 }
 
 model collectionList {
-  listId   String @id @default(auto()) @map("_id") @db.ObjectId
-  userName String
+  listId         String @id @default(auto()) @map("_id") @db.ObjectId
+  userName       String
+  collectionName String
 
   user              user                @relation(fields: [userName], references: [userName])
   projectCollection projectCollection[]

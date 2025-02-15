@@ -9,7 +9,8 @@ export async function saveCollectionList(c: CollectionList) {
 
         const savedCollectionList = await prisma.collectionList.create({
             data : {
-                userName : c.userName
+                userName : c.userName,
+                collectionName : c.collectionName
             }
         })
 
@@ -27,5 +28,17 @@ export async function saveCollectionList(c: CollectionList) {
     } catch (err) {
         console.error("Error saving collection list:", err);
         throw err;
+    }
+}
+
+export async function getCollectionList(userName : string){
+    try{
+        const collectionList = await prisma.collectionList.findFirst({
+            where : { userName : userName }
+        })
+        console.log("get collection list : ", collectionList)
+        return collectionList
+    } catch (err){
+        console.log("error on get collection list : ", err)
     }
 }
