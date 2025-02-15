@@ -4,7 +4,7 @@ import {
     deleteCollectionList,
     getCollectionList,
     getProjectCollection,
-    saveCollectionList
+    saveCollectionList, updateCollectionList
 } from "../db/prisma-data-collection-store";
 
 const router = express.Router()
@@ -58,6 +58,20 @@ router.delete("/delete/:listId" , async (req , res) => {
     } catch (err){
         console.log("error on delete collection : ", err)
         res.status(500).send("error on delete collection")
+    }
+})
+
+router.put("/update/:listId" , async (req , res) => {
+    const listId = req.params.listId
+    const collection : CollectionList = req.body
+
+    try{
+        const updatedCollection = await updateCollectionList(collection, listId)
+        console.log("updated collection : ", updatedCollection)
+        res.json(updatedCollection).status(200)
+    } catch (err){
+        console.log("error on update collection : ", err)
+        res.status(500).send("error on update collection")
     }
 })
 

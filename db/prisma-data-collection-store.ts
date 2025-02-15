@@ -57,6 +57,11 @@ export async function getProjectCollection(listId : string){
 
 export async function deleteCollectionList(listId : string){
     try{
+
+        await prisma.projectCollection.deleteMany({
+            where : { listId : listId }
+        })
+
         const deletedCollectionList = await prisma.collectionList.delete({
             where : { listId : listId }
         })
@@ -64,5 +69,34 @@ export async function deleteCollectionList(listId : string){
         return deletedCollectionList
     } catch (err){
         console.log("error on delete collection list : ", err)
+    }
+}
+
+export async function updateCollectionList(c : CollectionList , listId : string){
+    try{
+        const updatedCollectionList = await prisma.collectionList.update({
+            where : { listId : listId },
+            data : {
+                collectionName : c.collectionName
+            }
+        })
+
+        await prisma.projectCollection.deleteMany({
+            where : { listId : listId }
+        })
+
+        await prisma.projectCollection.createMany({
+            data : c.projectCollection.map((p : ProjectCollection) => {
+                return {
+                    listId : updatedCollectionList.listId,
+                    noteId : p.noteId
+                }
+            })
+        })
+
+        console.log("updated collection list : ", updatedCollectionList)
+        return updatedCollectionList
+    } catch (err){
+        console.log("error on update collection list : ", err)
     }
 }
