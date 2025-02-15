@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRouter, {authenticateToken} from "./router/auth-router";
 import userRouter from "./router/user-router";
 import noteRouter from "./router/note-router";
+import collectionRouter from "./router/collection-router";
 
 dotenv.config()
 const app = express()
@@ -23,6 +24,7 @@ app.use(authenticateToken);
 
 app.use('/user', userRouter)
 app.use('/note', noteRouter)
+app.use("/collection" , collectionRouter)
 
 app.listen(3000 , (err) => {
     console.log("server running on port 3000")
