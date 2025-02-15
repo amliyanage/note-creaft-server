@@ -42,3 +42,15 @@ export async function getCollectionList(userName : string){
         console.log("error on get collection list : ", err)
     }
 }
+
+export async function getProjectCollection(listId : string){
+    try{
+        const projectCollectionArray = await prisma.projectCollection.findMany({
+            where : { listId : listId }
+        })
+        console.log("get project collection : ", projectCollectionArray)
+        return projectCollectionArray
+    } catch (err){
+        console.log("error on get project collection : ", err)
+    }
+}

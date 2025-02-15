@@ -1,6 +1,6 @@
 import express from "express";
 import {CollectionList} from "../module/collectionList";
-import {getCollectionList, saveCollectionList} from "../db/prisma-data-collection-store";
+import {getCollectionList, getProjectCollection, saveCollectionList} from "../db/prisma-data-collection-store";
 
 const router = express.Router()
 
@@ -27,6 +27,19 @@ router.get("/get/:userName" , async (req , res) => {
     } catch (err){
         console.log("error on get collection : ", err)
         res.status(500).send("error on get collection")
+    }
+})
+
+router.get("/get/:listId" , async (req , res) => {
+    const listId = req.params.listId
+
+    try{
+        const projectCollection = await getProjectCollection(listId)
+        console.log("get project collection : ", projectCollection)
+        res.json(projectCollection).status(200)
+    } catch (err){
+        console.log("error on get project collection : ", err)
+        res.status(500).send("error on get project collection")
     }
 })
 
