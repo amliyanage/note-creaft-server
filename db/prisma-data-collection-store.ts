@@ -54,3 +54,15 @@ export async function getProjectCollection(listId : string){
         console.log("error on get project collection : ", err)
     }
 }
+
+export async function deleteCollectionList(listId : string){
+    try{
+        const deletedCollectionList = await prisma.collectionList.delete({
+            where : { listId : listId }
+        })
+        console.log("deleted collection list : ", deletedCollectionList)
+        return deletedCollectionList
+    } catch (err){
+        console.log("error on delete collection list : ", err)
+    }
+}

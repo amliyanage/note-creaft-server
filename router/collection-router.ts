@@ -1,6 +1,11 @@
 import express from "express";
 import {CollectionList} from "../module/collectionList";
-import {getCollectionList, getProjectCollection, saveCollectionList} from "../db/prisma-data-collection-store";
+import {
+    deleteCollectionList,
+    getCollectionList,
+    getProjectCollection,
+    saveCollectionList
+} from "../db/prisma-data-collection-store";
 
 const router = express.Router()
 
@@ -40,6 +45,19 @@ router.get("/get/:listId" , async (req , res) => {
     } catch (err){
         console.log("error on get project collection : ", err)
         res.status(500).send("error on get project collection")
+    }
+})
+
+router.delete("/delete/:listId" , async (req , res) => {
+    const listId = req.params.listId
+
+    try{
+        const deletedCollection = await deleteCollectionList(listId)
+        console.log("deleted collection : ", deletedCollection)
+        res.json(deletedCollection).status(200)
+    } catch (err){
+        console.log("error on delete collection : ", err)
+        res.status(500).send("error on delete collection")
     }
 })
 
