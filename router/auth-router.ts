@@ -4,10 +4,22 @@ import {add, verifyUser} from "../db/prisma-data-user-store";
 import jwt, {Secret} from 'jsonwebtoken';
 import {User} from "../module/User";
 import {upload} from "../util/multer";
+import {OAuth2Client} from "google-auth-library";
 
 dotenv.config()
 
 const router = express.Router()
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+
+async function verifyGoogleToken(idToken: string) {
+    console.log("Loaded secret key: ", idToken);
+    const ticket = await client.verifyIdToken({
+        idToken: idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,  // Ensure the token is for your app
+    });
+    const payload = ticket.getPayload();
+    return payload;  // Contains the user's Google profile data
+}
 
 router.post("/login", async (req, res) => {
     const userName = req.body.userName
@@ -43,6 +55,28 @@ router.post("/register", upload.single('profilePic') ,async (req, res) => {
         res.json({message : "Internal Server Error"}).status(401)
     }
 
+})
+
+router.post('/google-signup' , async (req , res) => {
+    const token = req.body.token.token
+    console.log("ena eka",token)
+
+    try {
+        const googleUser= await verifyGoogleToken(token)
+        const user : User = {
+            userName : googleUser?.sub as string,
+            email : googleUser?.email as string,
+            password : "",
+            name : googleUser?.name as string,
+            profilePic : googleUser?.picture as string,
+            fp : "false"
+        }
+        const isSignedUp = await add(user, googleUser?.picture as string)
+        res.json(isSignedUp).status(201)
+    } catch (err) {
+        console.log("error on google signup : ", err)
+        res.json({message: "Internal Server Error"}).status(401)
+    }
 })
 
 export function authenticateToken(req : express.Request, res : express.Response, next : express.NextFunction){
