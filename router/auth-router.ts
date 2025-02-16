@@ -34,12 +34,35 @@ router.post("/login", async (req, res) => {
             console.log("token" , token)
             const refreshToken = jwt.sign({userName : userName}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
             console.log("refresh",refreshToken)
-            res.json({token : token , refreshToken : refreshToken}).status(201)
+            res.status(201).json({token : token , refreshToken : refreshToken})
         } else {
-            res.json({message : "Invalid username or password"}).status(403)
+            res.status(403).json({ message: "Invalid username or password" });
         }
     } catch (err){
         console.log("error on login : ", err)
+        res.send("Internal Serve Error").status(500)
+    }
+})
+
+router.post("/google-login", async (req, res) => {
+    const token = req.body.token
+    console.log("ena eka",token)
+
+    try {
+        const googleUser= await verifyGoogleToken(token)
+        const user = await verifyUser(googleUser?.sub as string, "")
+        if(user){
+            console.log("Loaded secre   t key: ", process.env.REFRESH_TOKEN);
+            const token = jwt.sign({userName : googleUser?.sub as string}, process.env.SECRET_KEY as Secret , { expiresIn : "7d" })
+            console.log("token" , token)
+            const refreshToken = jwt.sign({userName : googleUser?.sub as string}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
+            console.log("refresh",refreshToken)
+            res.status(201).json({token : token , refreshToken : refreshToken})
+        } else {
+            res.status(403).json({ message: "Invalid username or password" });
+        }
+    } catch (err){
+        console.log("error on google login : ", err)
         res.send("Internal Serve Error").status(500)
     }
 })

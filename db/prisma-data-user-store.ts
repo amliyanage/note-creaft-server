@@ -102,3 +102,15 @@ export async function verifyUser(userName : string , password : string){
         console.log("error on verify user : ", err)
     }
 }
+
+export async function verifyGoogleUser(userName : string){
+    try{
+        const user = await prisma.user.findFirst({
+            where : { userName : userName }
+        })
+        console.log("verified google user : ", user)
+        return user
+    } catch (err){
+        console.log("error on verify google user : ", err)
+    }
+}
