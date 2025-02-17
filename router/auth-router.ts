@@ -5,6 +5,7 @@ import jwt, {Secret} from 'jsonwebtoken';
 import {User} from "../module/User";
 import {upload} from "../util/multer";
 import {OAuth2Client} from "google-auth-library";
+import SendMail from "../util/sendMail";
 
 dotenv.config()
 
@@ -134,6 +135,18 @@ router.post("/refresh-token", async (req, res) => {
     }catch(err){
         console.log(err);
         res.status(401).json(err);
+    }
+})
+
+router.post("/send-email/:email" , async (req , res) => {
+    const email = req.params.email
+
+    try{
+        const response = await SendMail(email)
+        res.json(response).status(201)
+    }catch (err){
+        console.log("error on send email : ", err)
+        res.json({message : "Internal Server Error"}).status(401)
     }
 })
 
