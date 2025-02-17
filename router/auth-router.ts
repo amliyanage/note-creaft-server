@@ -5,7 +5,7 @@ import jwt, {Secret} from 'jsonwebtoken';
 import {User} from "../module/User";
 import {upload} from "../util/multer";
 import {OAuth2Client} from "google-auth-library";
-import SendMail from "../util/sendMail";
+import SendMail, {verifyOTP} from "../util/sendMail";
 
 dotenv.config()
 
@@ -143,10 +143,26 @@ router.post("/send-email/:email" , async (req , res) => {
 
     try{
         const response = await SendMail(email)
-        res.json(response).status(201)
+        if (response != null){
+            res.status(201).json(response)
+        } else {
+            res.status(401).json({message: "Invalid email"})
+        }
     }catch (err){
         console.log("error on send email : ", err)
         res.json({message : "Internal Server Error"}).status(401)
+    }
+})
+
+router.post("/verify-otp/:email/:otp" , async (req , res) => {
+    const email = req.params.email
+    const otp = req.params.otp
+
+    const isVerified = verifyOTP(email, otp)
+    if(isVerified){
+        res.status(201).json({message : "OTP verified"})
+    } else {
+        res.status(401).json({message : "Invalid OTP"})
     }
 })
 

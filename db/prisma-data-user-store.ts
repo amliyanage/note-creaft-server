@@ -114,3 +114,15 @@ export async function verifyGoogleUser(userName : string){
         console.log("error on verify google user : ", err)
     }
 }
+
+export async function verifyEmail(email : string){
+    try{
+        const user = await prisma.user.findFirst({
+            where : { email : email }
+        })
+        console.log("verified email : ", user)
+        return user
+    } catch (err){
+        console.log("error on verify email : ", err)
+    }
+}

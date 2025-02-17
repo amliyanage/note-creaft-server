@@ -1,4 +1,7 @@
 import nodemailer from "nodemailer";
+import {verifyEmail} from "../db/prisma-data-user-store";
+
+const OTP_STORE = new Map<string, string>();
 
 const SendMail = async (email: string) => {
 
@@ -19,15 +22,30 @@ const SendMail = async (email: string) => {
         text : "Your OTP to reset the password is: " + otp
     }
 
+    const isValidMail = await verifyEmail(email)
 
-    try{
-        const response = await transporter.sendMail(mailOptions)
-        console.log("Email sent: " + response.response)
-        return response
-    }catch(err){
-        console.log("Error on sending email: ", err)
+    if (isValidMail) {
+        OTP_STORE.set(email, otp.toString())
+
+        try{
+            const response = await transporter.sendMail(mailOptions)
+            console.log("Email sent: " + response.response)
+            return response
+        }catch(err){
+            console.log("Error on sending email: ", err)
+        }
+    } else {
+        console.log("Invalid email")
+        return null
     }
 
+}
+
+export const verifyOTP = (email: string, otp: string) => {
+    if (OTP_STORE.has(email)) {
+        return OTP_STORE.get(email) === otp
+    }
+    return false
 }
 
 export default SendMail
