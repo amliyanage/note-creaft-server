@@ -160,7 +160,13 @@ router.post("/verify-otp/:email/:otp" , async (req , res) => {
 
     const isVerified = verifyOTP(email, otp)
     if(isVerified){
-        res.status(201).json({message : "OTP verified"})
+        // send token
+        console.log("Loaded secret key: ", process.env.SECRET_KEY);
+        const payload = jwt.sign({userName : email}, process.env.SECRET_KEY as Secret , { expiresIn : "7d" })
+        console.log("token" , payload)
+        const refreshToken = jwt.sign({userName : email}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
+        console.log("refresh",refreshToken)
+        res.status(201).json({token : payload , refreshToken : refreshToken})
     } else {
         res.status(401).json({message : "Invalid OTP"})
     }
