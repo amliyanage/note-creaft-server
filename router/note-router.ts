@@ -10,7 +10,7 @@ router.post("/save" , upload.single('thumbnail') , async (req , res) => {
     try{
         const savedNote = await saveNote(note, req.file!.path)
         console.log("saved note : ", savedNote)
-        res.json(savedNote).status(201)
+        res.status(201).json(savedNote)
     } catch (err){
         console.log("error on save note : ", err)
         res.status(500).send("error on save note")

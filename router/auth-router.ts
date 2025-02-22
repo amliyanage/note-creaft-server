@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
             console.log("token" , token)
             const refreshToken = jwt.sign({userName : userName}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
             console.log("refresh",refreshToken)
-            res.status(201).json({token : token , refreshToken : refreshToken})
+            res.status(201).json({token : token , refreshToken : refreshToken , username : userName})
         } else {
             res.status(403).json({ message: "Invalid username or password" });
         }
@@ -58,7 +58,8 @@ router.post("/google-login", async (req, res) => {
             console.log("token" , token)
             const refreshToken = jwt.sign({userName : googleUser?.sub as string}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
             console.log("refresh",refreshToken)
-            res.status(201).json({token : token , refreshToken : refreshToken})
+            console.log("user",googleUser?.sub)
+            res.status(201).json({token : token , refreshToken : refreshToken , username : googleUser?.sub})
         } else {
             res.status(403).json({ message: "Invalid username or password" });
         }
@@ -103,7 +104,7 @@ router.post('/google-signup' , async (req , res) => {
     }
 })
 
-export function authenticateToken(req : express.Request, res : express.Response, next : express.NextFunction){
+export function  authenticateToken(req : express.Request, res : express.Response, next : express.NextFunction){
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(' ')[1];
 
@@ -166,7 +167,7 @@ router.post("/verify-otp/:email/:otp" , async (req , res) => {
         console.log("token" , payload)
         const refreshToken = jwt.sign({userName : email}, process.env.REFRESH_TOKEN as Secret , { expiresIn : "7d" })
         console.log("refresh",refreshToken)
-        res.status(201).json({token : payload , refreshToken : refreshToken})
+        res.status(201).json({token : payload , refreshToken : refreshToken , username : isVerified})
     } else {
         res.status(401).json({message : "Invalid OTP"})
     }
