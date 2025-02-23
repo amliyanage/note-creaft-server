@@ -8,7 +8,7 @@ datasource db {
 }
 
 model user {
-  userName   String           @id @default(auto()) @map("_id") @db.ObjectId
+  userName   String           @id @map("_id")
   name       String
   password   String
   email      String
@@ -23,18 +23,22 @@ model note {
   thumbnail   String
   noteBody    String
   summery     String
-  isFavourite Boolean
+  title       String
+  visibility  String
+  isFavourite String
   date        DateTime
   status      String
+  userName    String
 
-  userName          String
   user              user                @relation(fields: [userName], references: [userName])
   projectCollection projectCollection[]
 }
 
 model collectionList {
-  listId            String              @id @default(auto()) @map("_id") @db.ObjectId
-  userName          String
+  listId         String @id @default(auto()) @map("_id") @db.ObjectId
+  userName       String
+  collectionName String
+
   user              user                @relation(fields: [userName], references: [userName])
   projectCollection projectCollection[]
 }
