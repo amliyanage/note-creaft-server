@@ -120,3 +120,33 @@ export async function getAllPublicNotes(){
         console.log("error on get all public notes : ", err)
     }
 }
+
+export async function changeVisibility(noteId : string , visibility : string){
+    try{
+        const updatedNote = await prisma.note.update({
+            where : { noteId : noteId },
+            data : {
+                visibility : visibility
+            }
+        })
+        console.log("updated note : ", updatedNote)
+        return updatedNote
+    } catch (err){
+        console.log("error on change visibility : ", err)
+    }
+}
+
+export async function changeFavourite(noteId : string , isFavourite : string){
+    try{
+        const updatedNote = await prisma.note.update({
+            where : { noteId : noteId },
+            data : {
+                isFavourite : isFavourite
+            }
+        })
+        console.log("updated note : ", updatedNote)
+        return updatedNote
+    } catch (err){
+        console.log("error on change favourite : ", err)
+    }
+}

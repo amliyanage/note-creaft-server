@@ -1,7 +1,16 @@
 import express from "express";
 import {upload} from "../util/multer";
 import {Note} from "../module/Note";
-import {deleteNote, getAllPublicNotes, getNotes, getNotesByUser, saveNote, update} from "../db/prisma-data-note-store";
+import {
+    changeFavourite,
+    changeVisibility,
+    deleteNote,
+    getAllPublicNotes,
+    getNotes,
+    getNotesByUser,
+    saveNote,
+    update
+} from "../db/prisma-data-note-store";
 
 const router = express.Router()
 
@@ -59,7 +68,7 @@ router.delete("/delete/:noteId" , async (req , res) => {
     try{
         const deletedNote = await deleteNote(noteId)
         console.log("deleted note : ", deletedNote)
-        res.json(deletedNote).status(201)
+        res.status(201).json(deletedNote)
     } catch (err){
         console.log("error on delete note : ", err)
         res.status(500).send("error on delete note")
@@ -74,6 +83,33 @@ router.get("/getPublicNotes", async (req , res) => {
     } catch (err){
         console.log("error on get notes : ", err)
         res.status(500).send("error on get notes")
+    }
+})
+
+router.put("/changeVisibility/:noteId" , async (req , res) => {
+    const noteId = req.params.noteId
+    const visibility = req.body.visibility
+    try{
+        const updatedNote = await changeVisibility(noteId, visibility)
+        console.log("updated note : ", updatedNote)
+        res.status(201).json(updatedNote)
+    } catch (err){
+        console.log("error on change visibility : ", err)
+        res.status(500).send("error on change visibility")
+    }
+})
+
+router.put("/changeFavourite/:noteId" , async (req , res) => {
+    const noteId = req.params.noteId
+    const isFavourite = req.body.isFavourite
+    console.log("noteId : ", isFavourite)
+    try{
+        const updatedNote = await changeFavourite(noteId, isFavourite)
+        console.log("updated note : ", updatedNote)
+        res.status(201).json(updatedNote)
+    } catch (err){
+        console.log("error on change favourite : ", err)
+        res.status(500).send("error on change favourite")
     }
 })
 
