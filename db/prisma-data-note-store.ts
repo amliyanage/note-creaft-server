@@ -53,6 +53,24 @@ export async function getNotesByUser(userName : string){
 
 export async function update(n : Note , noteId : string){
     try{
+
+        if (n.thumbnail === "N/A"){
+            const updatedNote = await prisma.note.update({
+                where : { noteId : noteId },
+                data : {
+                    noteBody : n.noteBody,
+                    summery : n.summery,
+                    isFavourite : n.isFavourite,
+                    status : n.status,
+                    title : n.title,
+                    visibility : n.visibility
+                }
+            })
+            console.log("updated note : ", updatedNote)
+            return updatedNote
+        }
+
+
         if(n.thumbnail){
             const oldImagePublicId = n.thumbnail.split("/").pop()?.split(".")[0]
             await cloudinary.uploader.destroy(`note/${oldImagePublicId}`)
