@@ -11,6 +11,7 @@ import {
     saveNote,
     update
 } from "../db/prisma-data-note-store";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const router = express.Router()
 
@@ -111,6 +112,25 @@ router.put("/changeFavourite/:noteId" , async (req , res) => {
         console.log("error on change favourite : ", err)
         res.status(500).send("error on change favourite")
     }
+})
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
+
+router.get("/generateSummary" , async (req , res) => {
+    const summary = req.query.summary as string;
+    const sendMsg = `summarized \n\n${summary}`;
+    console.log(sendMsg);
+    try{
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const result = await model.generateContent(sendMsg);
+        const response = await result.response;
+        const text = response.text();
+        res.json({ summary: text });
+    } catch (error) {
+        console.error('Gemini API error:', error);
+        res.status(500).json({ error: 'Failed to generate summary' });
+    }
+
 })
 
 export default router

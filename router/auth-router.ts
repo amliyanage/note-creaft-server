@@ -132,7 +132,7 @@ router.post("/refresh-token", async (req, res) => {
     try{
         const payload = jwt.verify(refresh_token as string, process.env.REFRESH_TOKEN as Secret) as {username: string, iat: number};
         const token = jwt.sign({ username: payload.username }, process.env.SECRET_KEY as Secret, {expiresIn: "1m"});
-        res.json({accessToken : token});
+        res.status(201).json({token : token});
     }catch(err){
         console.log(err);
         res.status(401).json(err);
